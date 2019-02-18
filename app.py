@@ -1,4 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_restful import reqparse, abort, Api, Resource
 from flask import render_template
 from file2 import makePrediction
 import numpy as np
@@ -58,6 +59,26 @@ def funcPost():
 def index():
     return render_template('index.html')
 #FAA831
+
+class HelloWorld(Resource):
+    def get(self):
+        json_data = request.get_json(force=True)
+        age = json_data['age']
+        gender = json_data['gender']
+        self_emp = json_data['self_emp']
+        mental_disorders  = json_data['mental_disorders ']
+        mental_healthinPast = json_data['mental_healthinPast']
+        work_from_home = json_data['work_from_home']
+        technology = json_data['technology']
+        benefits = json_data['benefits']
+        know_benefits = json_data['know_benefits']
+        wellness = json_data['wellness']
+        mental_issues = json_data['mental_issues']
+        mental_health = json_data['mental_health']
+        arr1 = [age, gender, self_emp, mental_disorders, mental_healthinPast, work_from_home, technology, benefits, know_benefits, wellness, mental_issues, mental_health]
+        return jsonify(makePrediction(np.array(arr1,dtype='int')))
+
+api.add_resource(HelloWorld, '/testing')
 
 if __name__ == "__main__":
     app.run(debug=True)
