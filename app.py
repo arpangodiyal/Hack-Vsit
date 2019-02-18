@@ -5,6 +5,23 @@ from file2 import makePrediction
 import numpy as np
 
 app = Flask(__name__)
+api = Api(app)
+
+parser = reqparse.RequestParser()
+
+parser.add_argument('age', type=str)
+parser.add_argument('gender', type=str)
+parser.add_argument('self_emp', type=str)
+parser.add_argument('mental_disorders', type=str)
+parser.add_argument('mental_healthinPast', type=str)
+parser.add_argument('work_from_home', type=str)
+parser.add_argument('technology', type=str)
+parser.add_argument('benefits', type=str)
+parser.add_argument('know_benefits', type=str)
+parser.add_argument('wellness', type=str)
+parser.add_argument('mental_issues', type=str)
+parser.add_argument('mental_health', type=str)
+    
 
 @app.route('/survey', methods = ['POST', 'GET'])
 def funcPost():
@@ -55,6 +72,21 @@ def funcPost():
         return render_template('results.html', result=dict1[c])
     return render_template('survey.html', result = c)
 
+# @app.route('/query')
+# def respond():
+#     age = request.args['age']
+#     gender = request.args['gender']
+#     self_emp = request.args['self_emp']
+#     mental_disorders  = request.args['mental_disorders ']
+#     mental_healthinPast = request.args['mental_healthinPast']
+#     work_from_home = request.args['work_from_home']
+#     technology = request.args['technology']
+#     benefits = request.args['benefits']
+#     know_benefits = request.args['know_benefits']
+#     wellness = request.args['wellness']
+#     mental_issues = request.args['mental_issues']
+#     mental_health = request.args['mental_health']
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -62,21 +94,28 @@ def index():
 
 class HelloWorld(Resource):
     def get(self):
-        json_data = request.get_json(force=True)
-        age = json_data['age']
-        gender = json_data['gender']
-        self_emp = json_data['self_emp']
-        mental_disorders  = json_data['mental_disorders ']
-        mental_healthinPast = json_data['mental_healthinPast']
-        work_from_home = json_data['work_from_home']
-        technology = json_data['technology']
-        benefits = json_data['benefits']
-        know_benefits = json_data['know_benefits']
-        wellness = json_data['wellness']
-        mental_issues = json_data['mental_issues']
-        mental_health = json_data['mental_health']
+        args = parser.parse_args()
+        # un = str(args['username'])
+        # pw = str(args['password'])
+        age = int(args['age'])
+        gender = int(args['gender'])
+        self_emp = int(args['self_emp'])
+        mental_disorders  = int(args['mental_disorders'])
+        mental_healthinPast = int(args['mental_healthinPast'])
+        work_from_home = int(args['work_from_home'])
+        technology = int(args['technology'])
+        benefits = int(args['benefits'])
+        know_benefits = int(args['know_benefits'])
+        wellness = int(args['wellness'])
+        mental_issues = int(args['mental_issues'])
+        mental_health = int(args['mental_health'])
         arr1 = [age, gender, self_emp, mental_disorders, mental_healthinPast, work_from_home, technology, benefits, know_benefits, wellness, mental_issues, mental_health]
-        return jsonify(makePrediction(np.array(arr1,dtype='int')))
+        try:
+            c = makePrediction(np.array(arr1,dtype='int'))
+            c = str(c[0])
+        except:
+            c = "2"
+        return jsonify(result=c)
 
 api.add_resource(HelloWorld, '/testing')
 
